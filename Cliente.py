@@ -46,7 +46,7 @@ class PTATCliente:
         elif x[0]=="del":
             op="2"
             caminhoRemoto = x[1]
-            i = caminhoRemoto.rfind('?')
+            i = caminhoRemoto.rfind('/')
             path = caminhoRemoto[0:i]
             while len(path)<128:
                 path+='?'
@@ -67,7 +67,7 @@ class PTATCliente:
             return(requisicao)
     def clienteServidor(self, req):
         import socket
-        serverAddress = "127.0.0.1"
+        serverAddress = "172.16.5.194"
         
         if len(req)<199:
                 print(req)
@@ -76,11 +76,13 @@ class PTATCliente:
                 clientSocket.connect((serverAddress, 12000))
                 clientSocket.send(req.encode())
                 resposta = clientSocket.recv(1024).decode()
+                mensagem = resposta[200:327]
+                mensagem = mensagem.replace("?", "")
                 if len(resposta)==328:
-                    respostaFormatada = "Código:{}\nMensagem do servidor: {}".format(resposta[199], resposta[200:327])
+                    respostaFormatada = "Código:{} -> {}".format(resposta[199], mensagem)
                     print(respostaFormatada)
                 elif len(resposta)>328:
-                    respostaFormatada = "Código:{} -> {}\nConteudo: {}".format(resposta[199], resposta[200:327], resposta[328:len(resposta)])
+                    respostaFormatada = "Código:{} -> {}\nConteudo: {}".format(resposta[199], mensagem, resposta[328:len(resposta)])
                     print(respostaFormatada)
 while True:
     cmd = input("PTAT:/ client >>> ")
