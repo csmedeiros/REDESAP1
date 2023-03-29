@@ -67,15 +67,15 @@ class PTATCliente:
             return(requisicao)
     def clienteServidor(self, req):
         import socket
-        serverAddress = "localhost"
+        serverAddress = "127.0.0.1"
         
         if len(req)<199:
                 print(req)
         else:
             with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as clientSocket:
-                clientSocket.connect((serverAddress, 81))
+                clientSocket.connect((serverAddress, 12000))
                 clientSocket.send(req.encode())
-                resposta = clientSocket.recv(12000).decode()
+                resposta = clientSocket.recv(1024).decode()
                 if len(resposta)==328:
                     respostaFormatada = "Código:{}\nMensagem do servidor: {}".format(resposta[199], resposta[200:327])
                     print(respostaFormatada)
