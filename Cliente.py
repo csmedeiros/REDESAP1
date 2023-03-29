@@ -10,7 +10,7 @@ while True:
             if x[0] == "read":
                 op = "0"
                 caminhoRemoto = x[1]
-                i = caminhoRemoto.rfind('\\')
+                i = caminhoRemoto.rfind('/')
                 path = caminhoRemoto[0:i]
                 while len(path)<128:
                     path+='?'
@@ -33,7 +33,7 @@ while True:
                     length = str(length)
                     while len(length)<6:
                         length = length+'?'
-                    i = caminhoRemoto.rfind('\\')
+                    i = caminhoRemoto.rfind('/')
                     path = caminhoRemoto[0:i]
                     while len(path)<128:
                         path+='?'
