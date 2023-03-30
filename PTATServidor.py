@@ -35,12 +35,6 @@ class PTATServidor:
             for i in range(199 , (199+lenght)):
                 body += comando[i]
 
-            print(codigo)  
-            print(lenght)
-            print(filename)
-            print(path)  
-            print(body)
-
             if not comando:
                 break
             elif str(codigo) == "0":
