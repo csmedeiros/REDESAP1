@@ -2,8 +2,8 @@ import os
 from socket import*
 
 class PTATServidor:
-    def ligaServidor(sock):
-        serverPort = 12000
+    def ligaServidor(sock, port):
+        serverPort = port
         serverSocket = sock
         serverSocket.bind(('', serverPort))
         serverSocket.listen(10)
@@ -144,6 +144,6 @@ class PTATServidor:
 
 if __name__ == '__main__':
     serverSocket = socket(AF_INET, SOCK_STREAM)
-    PTATServidor.ligaServidor(serverSocket)
+    PTATServidor.ligaServidor(serverSocket, 12000)
     PTATServidor.loop(serverSocket)
 
