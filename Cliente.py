@@ -1,7 +1,5 @@
-class PTATCliente:
-    def __init__(self):
-        self.verbose = True
-    def criaRequisicao(self, entrada:str):
+class PTATCliente: 
+    def criaRequisicao(entrada:str):
         import os
         x = entrada.split()
         if entrada=="" or entrada==" "*len(entrada):
@@ -65,9 +63,9 @@ class PTATCliente:
             length='?'*6
             requisicao = op+length+fileName+path
             return(requisicao)
-    def clienteServidor(self, req):
+    def clienteServidor(req):
         import socket
-        serverAddress = "172.16.5.194"
+        serverAddress = "127.0.0.1"
         if len(req)<199:
                 print(req)
         else:
@@ -79,14 +77,15 @@ class PTATCliente:
                 mensagem = mensagem.replace("?", "")
                 if len(resposta)==328:
                     respostaFormatada = "Código:{} -> {}".format(resposta[199], mensagem)
-                    if self.verbose == True:
+                    if verbose == True:
                         print(respostaFormatada)
                 elif len(resposta)>328:
                     respostaFormatada = "Código:{} -> {}\nConteudo: {}".format(resposta[199], mensagem, resposta[328:len(resposta)])
-                    if self.verbose == True:
+                    if verbose == True:
                         print(respostaFormatada)
-while True:
-    cmd = input("PTAT:/ client >>> ")
-    ptat = PTATCliente()
-    requisicao = str(ptat.criaRequisicao(cmd))
-    ptat.clienteServidor(requisicao)
+if __name__=='__main__':
+    while True:
+        verbose = False
+        cmd = input("PTAT:/ client >>> ")
+        requisicao = str(PTATCliente.criaRequisicao(cmd))
+        PTATCliente.clienteServidor(requisicao)

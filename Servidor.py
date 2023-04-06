@@ -5,7 +5,7 @@ class PTATServidor:
     def ligaServidor(sock, port):
         serverPort = port
         serverSocket = sock
-        serverSocket.bind(('', serverPort))
+        serverSocket.bind(('127.0.0.1', serverPort))
         serverSocket.listen(10)
         print("The server is ready to receive")
 
