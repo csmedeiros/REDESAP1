@@ -5,38 +5,52 @@ class PTATCliente:
         if entrada=="" or entrada==" "*len(entrada):
             return("Nada inserido. Insira a operação desejada e seus respectivos parâmetros.")
         elif x[0]!="read" and x[0]!="write" and x[0]!="del" and x[0]!="list":
-            return("Operação inválida")
+            op="?"
         elif x[0] == "read":
             op = "0"
+            length = "??????"
             if len(x)==1:
-                path="?"*128
-                fileName="?"*64
+               return("Código:5\nNenhum arquivo local foi digitado. Sintaxe correta para o comando: \"read <caminho no servidor remoto>\"")
             else:
                 caminhoRemoto = x[1]
                 i = caminhoRemoto.rfind('/')
-                path = caminhoRemoto[0:i]
-                while len(path)<128:
-                    path+='?'
                 fileName = caminhoRemoto[i+1:len(caminhoRemoto)]
-                while len(fileName)<64:
-                    fileName+='?'
-            length = "??????"
-            requisicao = op+length+fileName+path
-            return(requisicao)
+                length = "??????"
+                if '/' in caminhoRemoto or fileName != "":
+                    path = caminhoRemoto[0:i]
+                    while len(path)<128:
+                        path+='?'
+                    while len(fileName)<64:
+                        fileName+='?'
+                    requisicao = op+length+fileName+path
+                    return(requisicao)
+                else:
+                    path = "?"
+                    fileName="?"
+                    while len(path)<128:
+                        path+='?'
+                    while len(fileName)<64:
+                        fileName+='?'
+                    requisicao = op+length+fileName+path
+                    return(requisicao)
         elif x[0]=="write":
             op = "1"
             if len(x)==1:
-                return("Caminho local não inserido. Insira o caminho local e o caminho remoto para enviar ao servidor.")
+                return("Código:5\nNenhum arquivo local foi digitado. Sintaxe correta para o comando: \"write <caminho local> <caminho no servidor remoto>\"")
             elif len(x)==2:
                 caminhoLocal=x[1]
-                path="?"*128
-                fileName="?"*64
-                length="??????"
-                body=""
-                return(op+length+path+fileName+body)
+                if os.path.exists(caminhoLocal)==0:
+                    return("Arquivo local não encontrado. Certifique-se que o caminho foi digitado corretamente ou que arquivo exista na pasta.")
+                else:
+                    path="?"*128
+                    fileName="?"*64
+                    length="??????"
+                    body=""
+                    return(op+length+fileName+path+body)
             else:
                 caminhoRemoto = x[2]
                 caminhoLocal = x[1]
+                i = caminhoRemoto.rfind('/')
                 if os.path.exists(caminhoLocal)==0:
                     return("Arquivo local não encontrado. Certifique-se que o caminho foi digitado corretamente ou que arquivo exista na pasta.")
                 else:
@@ -45,26 +59,39 @@ class PTATCliente:
                     length = len(body)
                     length = str(length)
                     while len(length)<6:
-                        length = length+'?'
-                    i = caminhoRemoto.rfind('/')
-                    path = caminhoRemoto[0:i]
-
-                    while len(path)<128:
-                        path+='?'
-                    fileName = caminhoRemoto[i+1:len(caminhoRemoto)]
-                    while len(fileName)<64:
-                        fileName+='?'
-                    requisicao = op+length+fileName+path+body
-                    return(requisicao)
+                        length += "?"
+                    if i!=-1 and caminhoRemoto[0]!='/' and i!=len(caminhoRemoto):
+                        path = caminhoRemoto[0:i]
+                        fileName = caminhoRemoto[i+1:len(caminhoRemoto)]
+                        while len(path)<128:
+                            path+="?"
+                        fileName = caminhoRemoto[i+1:len(caminhoRemoto)]
+                        while len(fileName)<64:
+                            fileName+="?"
+                        requisicao = op+length+fileName+path+body
+                        return(requisicao)
+                    elif i==-1:
+                        path = caminhoRemoto
+                        fileName="?"
+                        while len(path)<128:
+                            path+="?"
+                        fileName = caminhoRemoto[i+1:len(caminhoRemoto)]
+                        while len(fileName)<64:
+                            fileName+="?"
+                        requisicao = op+length+fileName+path+body
+                        return(requisicao)
         elif x[0]=="del":
             op="2"
+            i=0
             if len(x)==1:
-                path="?"*128
-                fileName="?"*64
+                return("Código:5\nNenhum arquivo local foi digitado. Sintaxe correta para o comando: \"del <caminho no servidor remoto>\"")
             else:
-                caminhoRemoto = x[1]
+                caminhoRemoto=x[1]
                 i = caminhoRemoto.rfind('/')
-                path = caminhoRemoto[0:i]
+                if '/' in caminhoRemoto:
+                    path = caminhoRemoto[0:i]
+                else:
+                    path = "."
                 while len(path)<128:
                     path+='?'
                 fileName = caminhoRemoto[i+1:len(caminhoRemoto)]
@@ -75,7 +102,10 @@ class PTATCliente:
             return(requisicao)
         elif x[0]=="list":
             op="3"
-            path = x[1]
+            if len(x)==1:
+                return("Código:5\nNenhum arquivo local foi digitado. Sintaxe correta para o comando: \"list <caminho no servidor remoto>\"")
+            else:
+                path = x[1]
             while len(path)<128:
                 path+='?'
             fileName = '?'*64
